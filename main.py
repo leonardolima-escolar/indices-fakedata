@@ -113,21 +113,23 @@ for _ in range(qtd_cartaocredito):
                     fake.credit_card_expire(), fake.credit_card_security_code()))
 
 
-# qtd_cardUser2 = qtd_cardUser
 # Gerar e inserir dados na tabela UserCard
+cursor.execute("SELECT id FROM \"Card\"")
+card_ids = [row[0] for row in cursor.fetchall()]
+
 for _ in range(qtd_cardUser):
-    if _ > 0:
-        # qtd_cardUser2-=1 caso queira usar decrescente
+    user_id = fake.random_element(user_ids)
+    card_id = fake.random_element(card_ids)
 
-        cursor.execute(
-            "INSERT INTO \"UserCard\" (user_id,card_id) VALUES (%s,%s)", (_, _))
+    cursor.execute(
+        "INSERT INTO \"UserCard\" (user_id,card_id) VALUES (%s,%s)", (user_id, card_id))
 
-# Gerar e inserir dados na tabela Address
+# Gerar e inserir dados na Address
 for _ in range(qtd_endereco):
-    # user_id vai ser contado pelo proprio range do for a posição de cada usuário,id inicia = 1
-    if _ > 0:
-        cursor.execute("INSERT INTO \"Address\" (user_id, cep,uf, city, address1, address2) VALUES (%s,%s,%s,%s,%s,%s)",
-                       (_, fake.bothify(text='#####-###'), fake.country(), fake.city(), fake.street_address(), fake.street_name()))
+    user_id = fake.random_element(user_ids)
+
+    cursor.execute("INSERT INTO \"Address\" (user_id, cep,uf, city, address1, address2) VALUES (%s,%s,%s,%s,%s,%s)",
+                   (user_id, fake.bothify(text='#####-###'), fake.country(), fake.city(), fake.street_address(), fake.street_name()))
 
 
 # Confirmar as alterações e fechar a conexão
